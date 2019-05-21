@@ -1,0 +1,28 @@
+name: bash-language-server
+version: '1.5.6'
+summary: Bash Language Server
+description: |
+  Features:
+  * Jump to declaration
+  * Find references
+  * Code Outline & Show Symbols
+  * Highlight occurrences
+  * Code completion
+  * Simple diagnostics reporting
+  * Documentation for flags on hover
+
+grade: stable
+confinement: strict
+
+apps:
+  bash-language-server:
+    command: bash-language-server
+    plugs:
+      - network
+      - home
+
+parts:
+  bash-language-server:
+    plugin: nodejs
+    node-packages:
+      - bash-language-server
