@@ -31,7 +31,7 @@ parts:
     nodejs-version: 15.0.1
     override-build: |
       snapcraftctl build
-      ../npm/bin/npm install typescript
+      ../npm/bin/npm install typescript --registry http://registry.npmjs.org/
       ../npm/bin/yarn run compile || true
       cp -r server/out $SNAPCRAFT_PART_INSTALL
 
