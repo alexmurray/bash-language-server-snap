@@ -13,10 +13,11 @@ description: |
 
 grade: stable
 confinement: strict
+base: core18
 
 apps:
   bash-language-server:
-    command: bash-language-server
+    command: bin/bash-language-server
     plugs:
       - network
       - home
@@ -24,6 +25,13 @@ apps:
 parts:
   bash-language-server:
     plugin: nodejs
-    node-engine: 14.15.3
-    node-packages:
-      - bash-language-server
+    source: https://github.com/bash-lsp/bash-language-server.git
+    source-tag: server-$SNAPCRAFT_PROJECT_VERSION
+    source-subdir: server
+    nodejs-version: 15.0.1
+    override-build: |
+      snapcraftctl build
+      ../npm/bin/npm install typescript
+      ../npm/bin/yarn run compile || true
+      cp -r server/out $SNAPCRAFT_PART_INSTALL
+
