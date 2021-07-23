@@ -13,7 +13,7 @@ description: |
 
 grade: stable
 confinement: strict
-base: core18
+base: core20
 
 apps:
   bash-language-server:
@@ -24,14 +24,23 @@ apps:
 
 parts:
   bash-language-server:
-    plugin: nodejs
+    plugin: npm
     source: https://github.com/bash-lsp/bash-language-server.git
     source-tag: server-$SNAPCRAFT_PROJECT_VERSION
     source-subdir: server
-    nodejs-version: 15.0.1
+    npm-node-version: 14.17.3
     override-build: |
-      snapcraftctl build
-      ../npm/bin/npm install typescript --registry http://registry.npmjs.org/
-      ../npm/bin/yarn run compile || true
-      cp -r server/out $SNAPCRAFT_PART_INSTALL
+      # install the official nodejs so we get the expected npm version
+      curl -s https://nodejs.org/dist/v14.17.3/node-v14.17.3-linux-x64.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
+      npm config set user 0
+      npm config set unsafe-perm true
+      npm install yarn
+      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn install
+      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn run compile
+      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn run reinstall-server
+      # break symlink back to build area for final install
+      cp -r server $SNAPCRAFT_PART_INSTALL
+      rm $SNAPCRAFT_PART_INSTALL/lib/node_modules/bash-language-server
+      ln -s ../../server $SNAPCRAFT_PART_INSTALL/lib/node_modules/bash-language-server
+
 
