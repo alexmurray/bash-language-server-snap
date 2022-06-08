@@ -1,5 +1,5 @@
 name: bash-language-server
-version: '2.0.0'
+version: '3.0.3'
 summary: Bash Language Server
 description: |
   Features:
@@ -12,15 +12,12 @@ description: |
   * Documentation for flags on hover
 
 grade: stable
-confinement: strict
+confinement: classic
 base: core20
 
 apps:
   bash-language-server:
-    command: bin/bash-language-server
-    plugs:
-      - network
-      - home
+    command: bin/node $SNAP/bin/bash-language-server
 
 parts:
   bash-language-server:
@@ -28,7 +25,7 @@ parts:
     source: https://github.com/bash-lsp/bash-language-server.git
     source-tag: server-$SNAPCRAFT_PROJECT_VERSION
     source-subdir: server
-    npm-node-version: 14.17.3
+    npm-node-version: 16.15.1
     override-build: |
       # install the official nodejs so we get the expected npm version
       if [ $SNAP_ARCH == "amd64" ]; then
@@ -40,7 +37,7 @@ parts:
       else
         ARCH=$SNAP_ARCH
       fi
-      curl -s https://nodejs.org/dist/v14.17.3/node-v14.17.3-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
+      curl -s https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
       npm config set user 0
       npm config set unsafe-perm true
       npm install yarn
