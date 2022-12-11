@@ -1,5 +1,5 @@
 name: bash-language-server
-version: '3.0.3'
+version: '4.1.0'
 summary: Bash Language Server
 description: |
   Features:
@@ -25,7 +25,9 @@ parts:
     source: https://github.com/bash-lsp/bash-language-server.git
     source-tag: server-$SNAPCRAFT_PROJECT_VERSION
     source-subdir: server
-    npm-node-version: 16.15.1
+    build-environment:
+      - NODEJS_VERSION: "v18.12.1"
+    npm-node-version: $NODEJS_VERSION
     override-build: |
       # install the official nodejs so we get the expected npm version
       if [ $SNAP_ARCH == "amd64" ]; then
@@ -37,7 +39,7 @@ parts:
       else
         ARCH=$SNAP_ARCH
       fi
-      curl -s https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
+      curl -s https://nodejs.org/dist/"${NODEJS_VERSION}"/node-"${NODEJS_VERSION}"-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
       npm config set user 0
       npm config set unsafe-perm true
       npm install yarn
