@@ -40,8 +40,6 @@ parts:
         ARCH=$SNAP_ARCH
       fi
       curl -s https://nodejs.org/dist/"${NODEJS_VERSION}"/node-"${NODEJS_VERSION}"-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
-      npm config set user 0
-      npm config set unsafe-perm true
       npm install yarn
       $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn install
       $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn run compile
