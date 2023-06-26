@@ -26,7 +26,7 @@ parts:
     source-tag: server-$SNAPCRAFT_PROJECT_VERSION
     source-subdir: server
     build-environment:
-      - NODEJS_FIXED_VERSION: "v16.20.0"
+      - NODEJS_FIXED_VERSION: "v16.20.1"
     npm-node-version: $NODEJS_FIXED_VERSION
     override-build: |
       # install the official nodejs so we get the expected npm version
