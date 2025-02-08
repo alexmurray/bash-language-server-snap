@@ -1,5 +1,5 @@
 name: bash-language-server
-version: '4.7.0'
+version: '5.4.3'
 summary: Bash Language Server
 description: |
   Features:
@@ -13,7 +13,7 @@ description: |
 
 grade: stable
 confinement: classic
-base: core20
+base: core24
 
 apps:
   bash-language-server:
@@ -25,25 +25,20 @@ parts:
     source: https://github.com/bash-lsp/bash-language-server.git
     source-tag: server-$SNAPCRAFT_PROJECT_VERSION
     source-subdir: server
-    build-environment:
-      - NODEJS_FIXED_VERSION_16: "v16.20.2"
-    npm-node-version: $NODEJS_FIXED_VERSION_16
+    npm-node-version: 22.13.0
+    npm-include-node: true
     override-build: |
-      # install the official nodejs so we get the expected npm version
-      if [ $SNAP_ARCH == "amd64" ]; then
-        ARCH=x64
-      elif [ $SNAP_ARCH == "armhf" ]; then
-        ARCH=armv7l
-      elif [ $SNAP_ARCH == "ppc64el" ]; then
-        ARCH=ppc64le
-      else
-        ARCH=$SNAP_ARCH
-      fi
-      curl -s https://nodejs.org/dist/"${NODEJS_FIXED_VERSION_16}"/node-"${NODEJS_FIXED_VERSION_16}"-linux-$ARCH.tar.gz | tar xzf - -C "$SNAPCRAFT_PART_INSTALL" --strip-components=1
-      npm install yarn
-      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn install
-      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn run compile
-      $SNAPCRAFT_PART_BUILD/node_modules/.bin/yarn run reinstall-server
+      # this will just install node and run npm install -g into
+      # CRAFT_PARTS_INSTALL - we need to also actually compile the typescript
+      # source into javascript
+      craftctl default
+      npm install -g pnpm
+      # ensure devDependencies get installed by unsetting NODE_ENV as production
+      unset NODE_ENV
+      pnpm install
+      pnpm run compile
+      pnpm run reinstall-server
+      cp -r node_modules $SNAPCRAFT_PART_INSTALL
       # break symlink back to build area for final install
       cp -r server $SNAPCRAFT_PART_INSTALL
       rm $SNAPCRAFT_PART_INSTALL/lib/node_modules/bash-language-server
