@@ -23,7 +23,7 @@ parts:
   bash-language-server:
     plugin: npm
     source: https://github.com/bash-lsp/bash-language-server.git
-    source-tag: server-$SNAPCRAFT_PROJECT_VERSION
+    source-tag: server-$CRAFT_PROJECT_VERSION
     source-subdir: server
     npm-node-version: 22.13.0
     npm-include-node: true
